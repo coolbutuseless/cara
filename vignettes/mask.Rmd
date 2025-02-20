@@ -1,0 +1,68 @@
+---
+title: "Using Masks"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using Masks}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(cara)
+```
+
+`{cara}` supports masked drawing operations.  The mask can be any size 
+and its location within the dst image can be changed.
+
+A masked drawing region is bounded by calls to `cr_mask_begin()` and `cr_mask_end()`
+
+
+```{r eval=TRUE}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Load the package logo
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+logo_file <- system.file("img/logo-rainbow.png", package = "cara", mustWork = TRUE)
+logo <- cr_read_png(logo_file)
+plot(logo, T)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a checerboard pattern
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+d <- 40
+pat <- cr_new(d, d, 'royalblue') |>
+  cr_rect(  0,   0, d/2, d/2, fill = 'grey20') |> 
+  cr_rect(d/2, d/2, d/2, d/2, fill = 'grey20') |> 
+  create_pattern_image() 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Show the pattern filling an entire image 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cr_new(400, 300) |>
+  cr_fill(fill = pat) |> 
+  plot(T)
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create an image canvas and draw a circle
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+canvas <- cr_new(600, 400, 'grey80')
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Using the big version of the logo as a mask
+#  - fill the image with the pattern (within the mask)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cr_mask_begin(canvas, logo) 
+  cr_fill(canvas, fill = pat)
+cr_mask_end(canvas)
+
+plot(canvas, T)
+```
+

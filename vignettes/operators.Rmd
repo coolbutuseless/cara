@@ -1,0 +1,55 @@
+---
+title: "Compositing Operators"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Compositing Operators}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+`{cara}` allows for different *operators* i.e. how are layers combined when painting objects on the 
+canvas.
+
+This is an advanced topic and suggested reading includes:
+
+* [Cairo's documentation on operators](https://www.cairographics.org/operators/)
+* [Paul Murrell's work on compositing in R](https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/compositing/compositing.html)
+
+
+```{r setup}
+library(cara)
+
+operators <- c(
+  'over', 'in', 'out', 'atop', 'dest', 'dest-over', 'dest-in', 'dest-out', 'dest-atop',
+  'xor', 'add', 'saturate', 'multiply', 'screen', 'overlay', 'darken', 'lighten',
+  'dodge', 'burn', 'hard-light', 'soft-light', 'difference', 'exclusion', 
+  'hsl-hue', 'hsl-sat', 'hsl-color', 'hsl-luminosity'
+)
+
+
+for (op in operators) {
+  canvas <- cr_new(800, 600, 'grey90')
+  
+  # draw a regular green rectangle
+  cr_rect(canvas, x = 350, y = 0, w = 100, h = 600, fill = 'darkgreen' )
+  
+  # Draw overlapping 'red' and 'blue' rectangles
+  cr_params_set(canvas, params = cpar(operator = op))
+  cr_rect(canvas, x = 100, y =  50, w = 500, h = 300, fill = 'red' )
+  cr_rect(canvas, x = 300, y = 200, w = 500, h = 300, fill = 'blue')
+  
+  # Reset operator and write a label on top of the image
+  cr_params_set(canvas, params = cpar(operator = 'over'))
+  cr_text_basic(canvas, paste0("Operator: ", op), 20, y = 30, size = 30)
+  
+  plot(canvas, T)
+}
+```

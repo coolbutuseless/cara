@@ -1,0 +1,8 @@
+
+#PKG_CPPFLAGS = -I/opt/homebrew/Cellar/cairo/1.18.0/include/cairo
+#PKG_LIBS = -L/opt/homebrew/Cellar/cairo/1.18.0/lib -lcairo
+
+PKG_CPPFLAGS = `pkg-config --cflags-only-I cairo` 
+PKG_LIBS = `pkg-config --cflags --libs cairo` 
+
+#PKG_CFLAGS += -Wconversion

@@ -1,0 +1,36 @@
+Package: cara
+Type: Package
+Title: Draw and Manipulate Images with Cairo
+Version: 0.1.1
+Authors@R: c(
+    person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com")
+    )
+Maintainer: Mike Cheng <mikefc@coolbutuseless.com>
+Description: Functions for low-level manipulation and drawing with images supported by
+    the 'Cairo' library.  Direct access to 'Cairo' drawing surfaces for image
+    creating, shape drawing, text rendering, pattern rendering, and image copying.  Supports 
+    masked operations and configuration of core options such as antialiasing, 
+    filtering and pattern handling.
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.3.2
+SystemRequirements:
+    cairo (>= 1.2 http://www.cairographics.org/),
+    freetype2,
+    fontconfig
+LinkingTo: colorfast
+Imports:
+    colorfast (>= 1.0.1.9000)
+Suggests: 
+    png,
+    magick,
+    knitr,
+    systemfonts,
+    textshaping,
+    rmarkdown,
+    vdiffr,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Remotes:
+    coolbutuseless/colorfast

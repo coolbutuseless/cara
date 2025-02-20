@@ -1,0 +1,83 @@
+---
+title: "Text Rendering"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Text Rendering}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(cara)
+```
+
+
+## Available Fonts
+
+```{r}
+font_names <- systemfonts::system_fonts()$family
+head(font_names, 40)
+```
+
+## Choose font and size
+
+```{r}
+font_name <- 'sans-serif'
+font_size <- 100
+
+text <- 'Hello #Rstats!'
+```
+
+
+
+## Rendering basic text
+
+Very little layout calculation is applied. 
+
+```{r}
+canvas <- cr_new(800, 200, 'grey80')
+cr_text_basic(canvas, text = text, 80, 150, family = font_name, size = font_size)
+plot(canvas, T)
+```
+
+
+## Rendering glyphs with calculated layout
+
+```{r}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Glyph layout with {textshaping} package
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ts <- textshaping::shape_text(text, family = font_name, id = 1, 
+                              size = font_size, weight = 400)  
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a canvas 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+canvas <- cr_new(800, 200, 'grey80')
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Draw the glyphs calculated by {textshaping}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cr_text_glyph(
+  canvas, 
+  idx    = ts$shape$index, 
+  x      = ts$shape$x_offset +  80, 
+  y      = ts$shape$y_offset + 120,
+  fill   = 'black',
+  family = font_name,
+  size   = font_size
+)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Render to screen
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+plot(canvas, T)
+```
+
